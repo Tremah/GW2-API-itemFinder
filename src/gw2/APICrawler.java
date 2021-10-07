@@ -118,11 +118,3 @@ public class APICrawler {
         }
     }
 }
-/*
-        for(int i = 0; i < array.length(); i++){
-        JSONObject object = array.getJSONObject(i);
-        System.out.println(object.getString("Name"));
-        //JSONObject jo = new JSONObject((itemLine));
-        //System.out.println(itemSb.toString());
-        }
-*/
