@@ -2,4 +2,4 @@
 out/
 idea/
 db_save/
-./GW2-API-itemFinder.iml
+*.iml
