@@ -1,13 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="3fc63381-e6c5-4bc7-a50a-48840b77b2c0" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/json_20210307.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/json_20210307.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/state.txt" beforeDir="false" afterPath="$PROJECT_DIR$/config/state.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/db/db.csv" beforeDir="false" afterPath="$PROJECT_DIR$/db/db.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/db_save/db_save.csv" beforeDir="false" afterPath="$PROJECT_DIR$/db_save/db_save.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gw2/APICrawler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/gw2/APICrawler.java" afterDir="false" />
-    </list>
+    <list default="true" id="3fc63381-e6c5-4bc7-a50a-48840b77b2c0" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
