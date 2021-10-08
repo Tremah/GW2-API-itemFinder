@@ -1,5 +1,5 @@
 # Project exclude paths
 out/
-.idea/
+idea/
 db_save/
-GW2-API-itemFinder.iml
+./GW2-API-itemFinder.iml
