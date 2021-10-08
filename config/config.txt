@@ -1,0 +1,8 @@
+#config file for gw2 api crawler
+API_ENTRY=https://api.guildwars2.com/v2/items
+API_ITEM_SUFFIX=?ids=
+API_STANDARD_WAIT_MS=500
+API_LONG_WAIT_MS=3000
+ITEM_DB_PATH=db\db.csv
+CONFIG_FILE_PATH=config\config.txt
+MAX_PULL_IDS_COUNT=200

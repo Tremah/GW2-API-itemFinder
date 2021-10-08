@@ -1,19 +1,58 @@
 package gw2;
 import java.io.*;
+import java.util.HashMap;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import org.json.*;
 
 
 public class APICrawler {
+    //API
     private final static String API_ENTRY = "https://api.guildwars2.com/v2/items";
     private final static String API_ITEM_SUFFIX = "?ids=";
+
+    //application config
+    private static HashMap<String, String> configList = new HashMap<String, String>();
+    private final static String itemDbPath = "db\\db.csv";
+    private final static String configFilePath = "config\\config.txt";
     private final static int SLEEP_AMOUNT = 500;
     private final static int MAX_ID_COUNT = 200;
-    private static int numItems = 0;
-    private static String itemDbPath = "C:\\Users\\Warren\\IdeaProjects\\Project_Tremah\\db\\db.csv";
-    public static BufferedReader getApiResponse(String url) throws IOException {
 
+
+    private static int numItems = 0;
+
+    public static boolean initApp() throws IOException {
+        System.out.println("Initializing application...");
+        BufferedReader bfr = readFromFile(configFilePath);
+        StringBuffer sbfr = new StringBuffer();
+        String line = "";
+        while((line = bfr.readLine()) != null){
+            //exclude empty lines and comments (lines starting with a "#"
+            if(line.length() > 0 && !(line.substring(0, 1).equals("#"))){
+                //prepare line string
+                line = line.trim();
+                line = line.replace("\n", "");
+                //find position of = to separate key-value pair
+                int posSeparator = line.indexOf("=");
+                if(posSeparator == -1){
+                    //no "=" found
+                    System.out.println("not able to parse line: " + line);
+                }
+                else{
+                    //process line and insert into list of config values
+                    String key = line.substring(0, posSeparator);
+                    String value = line.substring(posSeparator + 1);
+                    configList.put(key, value);
+                    System.out.println("read key value pair: " + key + " = " + value);
+                }
+            }
+        }
+
+        return false;
+    }
+
+    public static BufferedReader getApiResponse(String url) throws IOException {
+        //return Buffered Reader to read from API
         URL itemUrl = new URL(url);
         HttpURLConnection itemConn = (HttpURLConnection) itemUrl.openConnection();
         itemConn.setRequestMethod("GET");
@@ -22,12 +61,19 @@ public class APICrawler {
         return itemBfr;
     }
 
+    public static BufferedReader readFromFile(String filePath) throws IOException {
+        //return Buffered Reader to read from file
+        FileReader fr = new FileReader(filePath);
+        BufferedReader bfr = new BufferedReader(fr);
+        return bfr;
+    }
+
     public static void writeToFile(String content, String filePath, int lastId){
         try {
             FileWriter fw = new FileWriter(filePath, true);
             fw.write(content);
             fw.close();
-            FileWriter configFile = new FileWriter("C:\\Users\\Warren\\IdeaProjects\\Project_Tremah\\config\\state.txt");
+            FileWriter configFile = new FileWriter("config\\state.txt");
             configFile.write("id=" + lastId);
             configFile.close();
 
@@ -36,14 +82,15 @@ public class APICrawler {
         }
     }
 
-
     public static void main(String[] args) throws IOException, InterruptedException {
+        //initialize app
+        initApp();
         // URl object url, call gw2 api for item id list.
-        File itemDbFile = new File(itemDbPath);
+        File itemDbFile = new File(configList.get("ITEM_DB_PATH"));
         itemDbFile.delete();
         String itemDbHeader = "ID,NAME,LEVEL,ICON,CHAT_LINK\n";
-        writeToFile(itemDbHeader, itemDbPath, -1);
-        BufferedReader bfr = getApiResponse(API_ENTRY);
+        writeToFile(itemDbHeader, configList.get("ITEM_DB_PATH"), -1);
+        BufferedReader bfr = getApiResponse(configList.get("API_ENTRY"));
         String itemId;
         String itemIdContainer = "";
         int idCount = 0;
@@ -64,9 +111,9 @@ public class APICrawler {
                     }
                     idCount++;
                     numItems++;
-                    // Gets 200 ID and appends to the URL
-                    if (idCount == MAX_ID_COUNT) {
-                        String itemUrlString = API_ENTRY + API_ITEM_SUFFIX + itemIdContainer;
+                    // Gets 200 IDs and appends to the URL
+                    if (idCount == Integer.parseInt(configList.get("MAX_PULL_IDS_COUNT"))) {
+                        String itemUrlString = configList.get("API_ENTRY") + configList.get("API_ITEM_SUFFIX") + itemIdContainer;
 
                         // Call gw2 API for 200 items.
                         BufferedReader itemBuffer = getApiResponse(itemUrlString);
@@ -98,15 +145,15 @@ public class APICrawler {
 
                         int index = itemList.length() - 1;
                         int lastItemId = itemList.getJSONObject(index).getInt("id");
-                        writeToFile(fileContent, itemDbPath, lastItemId);
+                        writeToFile(fileContent, configList.get("ITEM_DB_PATH"), lastItemId);
                         idCount = 0;
                         itemIdContainer = "";
                         itemSb.delete(0, itemSb.length());
                         System.out.println("Sleeping, " + "Number of items: " + numItems);
-                        Thread.sleep(SLEEP_AMOUNT);
+                        Thread.sleep(Integer.parseInt(configList.get("API_STANDARD_WAIT_MS")));
                         if (numItems % 8000 == 0) {
                             System.out.println("Sleeping longer....");
-                            Thread.sleep(1000 * 3);
+                            Thread.sleep(Integer.parseInt(configList.get("API_LONG_WAIT_MS")));
 
                         }
                     }
